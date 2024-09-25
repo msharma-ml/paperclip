@@ -58,7 +58,15 @@ module Paperclip
     end
 
     def escape_url(url)
-      (url.respond_to?(:escape) ? url.escape : URI.escape(url)).gsub(/(\/.+)\?(.+\.)/, '\1%3F\2')
+      if url.respond_to?(:escape)
+        url.escape
+      else
+        self.class.escape(url).gsub(escape_regex) { |m| "%#{m.ord.to_s(16).upcase}" }
+      end
+    end
+
+    def escape_regex
+      /[\?\(\)\[\]\+]/
     end
   end
 end
