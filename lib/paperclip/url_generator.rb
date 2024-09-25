@@ -2,6 +2,13 @@ require 'uri'
 
 module Paperclip
   class UrlGenerator
+    class << self
+      def encoder
+        @encoder ||= URI::RFC2396_Parser.new
+      end
+      delegate :escape, :unescape, to: :encoder
+    end
+    
     def initialize(attachment, attachment_options)
       @attachment = attachment
       @attachment_options = attachment_options
